@@ -99,18 +99,13 @@ int main(int argc, const char *argv[])
         vector<cv::KeyPoint> ROI_keypoints;
         if (bFocusOnVehicle)
         {
-            cout << "ROI starts!" << endl;
             for (auto it = keypoints.begin(); it != keypoints.end(); it++)
             {
                 if (vehicleRect.contains(cv::Point2i((int)it->pt.x, (int)it->pt.y)))
                 {
-                    cout << "Erase this point: " << it->pt.x << ", " << it->pt.y << endl;
                     ROI_keypoints.emplace_back(*it);
-                    cout << "Point erased" << endl;
                 }
-
             }
-            cout << "ROI done!" << endl;
         }
         
 
