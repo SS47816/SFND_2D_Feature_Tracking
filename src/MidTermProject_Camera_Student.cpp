@@ -96,16 +96,23 @@ int main(int argc, const char *argv[])
         // only keep keypoints on the preceding vehicle
         bool bFocusOnVehicle = true;
         cv::Rect vehicleRect(535, 180, 180, 150);
+        vector<cv::KeyPoint> ROI_keypoints;
         if (bFocusOnVehicle)
         {
+            cout << "ROI starts!" << endl;
             for (auto it = keypoints.begin(); it != keypoints.end(); it++)
             {
-                // if (vehicleRect.contains((*it)))
-                // {
+                if (vehicleRect.contains(cv::Point2i((int)it->pt.x, (int)it->pt.y)))
+                {
+                    cout << "Erase this point: " << it->pt.x << ", " << it->pt.y << endl;
+                    ROI_keypoints.emplace_back(*it);
+                    cout << "Point erased" << endl;
+                }
 
-                // }
             }
+            cout << "ROI done!" << endl;
         }
+        
 
         //// EOF STUDENT ASSIGNMENT
 
@@ -117,14 +124,14 @@ int main(int argc, const char *argv[])
 
             if (detectorType.compare("SHITOMASI") == 0)
             { // there is no response info, so keep the first 50 as they are sorted in descending quality order
-                keypoints.erase(keypoints.begin() + maxKeypoints, keypoints.end());
+                ROI_keypoints.erase(ROI_keypoints.begin() + maxKeypoints, ROI_keypoints.end());
             }
-            cv::KeyPointsFilter::retainBest(keypoints, maxKeypoints);
+            cv::KeyPointsFilter::retainBest(ROI_keypoints, maxKeypoints);
             cout << " NOTE: Keypoints have been limited!" << endl;
         }
 
         // push keypoints and descriptor for current frame to end of data buffer
-        (dataBuffer.end() - 1)->keypoints = keypoints;
+        (dataBuffer.end() - 1)->keypoints = ROI_keypoints;
         cout << "#2 : DETECT KEYPOINTS done" << endl;
 
         /* EXTRACT KEYPOINT DESCRIPTORS */
