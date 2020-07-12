@@ -32,3 +32,24 @@ See the classroom instruction and code comments for more details on each of thes
 2. Make a build directory in the top level directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
 4. Run it: `./2D_feature_tracking`.
+
+
+
+## Test Results
+
+The original text results can be found in the `results.ods` file 
+
+### Key-point Detection
+
+All results are average values tested on 10 images
+
+| Detector  | Number of Key-points | Time Taken | Distribution of Neighborhood Size |
+| --------- | -------------------- | ---------- | --------------------------------- |
+| SHITOMASI | 1339                 | 8 ms       | very small                        |
+| HARRIS    | 516                  | 8 ms       | very small                        |
+| FAST      | 4905                 | 2 ms       | very small                        |
+| BRISK     | 2707                 | 26 ms      | vary from medium to very large    |
+| ORB       | 500                  | 5 ms       | vary from medium to very large    |
+| AKAZE     | 1342                 | 41 ms      | vary from small to medium         |
+| SIFT      | 1380                 | 56 ms      | vary from small to large          |
+

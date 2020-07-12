@@ -200,11 +200,7 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
     vector<cv::KeyPoint> kptsBRISK;
     
     // Select detector type
-    if (detectorType.compare("HARRIS") == 0)
-    {
-        detKeypointsHarris(keypoints, img, false);
-    }
-    else if (detectorType.compare("FAST") == 0)
+    if (detectorType.compare("FAST") == 0)
     {
         detector = cv::FastFeatureDetector::create();
     }
@@ -226,7 +222,8 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
     }
     else
     {
-        detKeypointsHarris(keypoints, img, false);
+        cout << "Warning: Invalid Detector Type, runing default detector now..." << endl;
+        detector = cv::ORB::create();
     }
 
     // Detect keypoints in image using the detector
