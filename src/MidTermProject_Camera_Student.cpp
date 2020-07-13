@@ -42,14 +42,20 @@ int main(int argc, const char *argv[])
     vector<DataFrame> dataBuffer; // list of data frames which are held in memory at the same time
     bool bVis = false;            // visualize results
 
-    const string detectorType = "SHITOMASI"; 
+    const string detectorType = "ORB";
     // SHITOMASI, HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
     const vector<string> descriptorTypeList{ "BRISK", "BRIEF", "ORB", "FREAK", "SIFT" };
     // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
+    /** 
+     * Some Invalid Combinations:
+     * AKAZE/KAZE: only to itself
+     * SIFT - ORB
+     */
 
     const int num_epochs = 10;      // number of testing rounds
 
     vector<long long> num_kpts_list(descriptorTypeList.size(), 0);
+    vector<long long> num_ROI_kpts_list(descriptorTypeList.size(), 0);
     vector<long long> num_matches_list(descriptorTypeList.size(), 0);
     vector<double> t_detection_list(descriptorTypeList.size(), 0.0);
     vector<double> t_extraction_list(descriptorTypeList.size(), 0.0);
@@ -132,6 +138,7 @@ int main(int argc, const char *argv[])
                 }
             }
         }
+        num_ROI_kpts_list[i] += ROI_keypoints.size();
         
         //// EOF STUDENT ASSIGNMENT
 
@@ -232,12 +239,14 @@ int main(int argc, const char *argv[])
     cout << "Over the " << num_epochs << " epochs on 10 images: " << endl;
 
     long long num_kpts = 0;         // number of detected keypoints 
+    long long num_ROI_kpts = 0;     // number of keypoints in the ROI
     double t_detection = 0.0;       // average detection time
     for (int i = 0; i < descriptorTypeList.size(); i++)
     {
         // Calculate Avg Values for Detector
         t_detection += t_detection_list[i] / 10.0 / num_epochs;
         num_kpts += num_kpts_list[i] / 10 / num_epochs;
+        num_ROI_kpts += num_ROI_kpts_list[i] / 10 / num_epochs;
         
         // Calculate Avg Values for Descriptor
         long long num_matched_kpts = num_matches_list[i] / 9 / num_epochs; // average number of matched keypoint
@@ -253,6 +262,7 @@ int main(int argc, const char *argv[])
     cout << "Using " << detectorType << ": " << endl;
     cout << "Avg Detection Time: " << t_detection / descriptorTypeList.size() << " ms" << endl;
     cout << "Avg Detected Keypoints: " << num_kpts / descriptorTypeList.size() << endl;
+    cout << "Avg ROI Keypoints: " << num_ROI_kpts / descriptorTypeList.size() << endl;
 
     return 0;
 }
