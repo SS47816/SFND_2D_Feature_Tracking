@@ -240,7 +240,7 @@ int main(int argc, const char *argv[])
         num_kpts += num_kpts_list[i] / 10 / num_epochs;
         
         // Calculate Avg Values for Descriptor
-        long long num_matched_kpts = num_matches_list[i] / 10 / num_epochs; // average number of matched keypoint
+        long long num_matched_kpts = num_matches_list[i] / 9 / num_epochs; // average number of matched keypoint
         double t_extraction = t_extraction_list[i] / 10.0 / num_epochs;       // average extraction time
         
         cout << "=========== " << descriptorTypeList[i] << " ===========" << endl;
