@@ -127,37 +127,30 @@ int main(int argc, const char *argv[])
         // only keep keypoints on the preceding vehicle
         bool bFocusOnVehicle = true;
         cv::Rect vehicleRect(535, 180, 180, 150);
-        vector<cv::KeyPoint> ROI_keypoints;
         if (bFocusOnVehicle)
         {
-            for (auto it = keypoints.begin(); it != keypoints.end(); it++)
-            {
-                if (vehicleRect.contains(cv::Point2i((int)it->pt.x, (int)it->pt.y)))
-                {
-                    ROI_keypoints.emplace_back(*it);
-                }
-            }
+            auto predicate = [vehicleRect](cv::KeyPoint keypoint) { return (!vehicleRect.contains(keypoint.pt)); };
+            keypoints.erase( std::remove_if( keypoints.begin(), keypoints.end(), predicate), keypoints.end());
         }
-        num_ROI_kpts_list[i] += ROI_keypoints.size();
+        num_ROI_kpts_list[i] += keypoints.size();
         
         //// EOF STUDENT ASSIGNMENT
 
         // optional : limit number of keypoints (helpful for debugging and learning)
-        // bool bLimitKpts = false;
-        // if (bLimitKpts)
-        // {
-        //     int maxKeypoints = 50;
-
-        //     if (detectorType.compare("SHITOMASI") == 0)
-        //     { // there is no response info, so keep the first 50 as they are sorted in descending quality order
-        //         ROI_keypoints.erase(ROI_keypoints.begin() + maxKeypoints, ROI_keypoints.end());
-        //     }
-        //     cv::KeyPointsFilter::retainBest(ROI_keypoints, maxKeypoints);
-        //     cout << " NOTE: Keypoints have been limited!" << endl;
-        // }
+        bool bLimitKpts = false;
+        if (bLimitKpts)
+        {
+            int maxKeypoints = 50;
+            if (detectorType.compare("SHITOMASI") == 0)
+            { // there is no response info, so keep the first 50 as they are sorted in descending quality order
+                keypoints.erase(keypoints.begin() + maxKeypoints, keypoints.end());
+            }
+            cv::KeyPointsFilter::retainBest(keypoints, maxKeypoints);
+            cout << " NOTE: Keypoints have been limited!" << endl;
+        }
 
         // push keypoints and descriptor for current frame to end of data buffer
-        (dataBuffer.end() - 1)->keypoints = ROI_keypoints;
+        (dataBuffer.end() - 1)->keypoints = keypoints;
         cout << "#2 : DETECT KEYPOINTS done" << endl;
 
         /* EXTRACT KEYPOINT DESCRIPTORS */
